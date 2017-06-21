@@ -10,7 +10,7 @@
 (def ^:private ^:const params-regex #"(?<!\")\?(?!\")")
 
 (defn- get-one [result-chan]
-  (let [return-chan (a/chan)]
+  (let [return-chan (a/promise-chan)]
     (a/take! result-chan
              (fn [res]
                (let [return (if (instance? Exception res)
@@ -21,19 +21,11 @@
                    (a/put! return-chan return #(a/close! return-chan))))))
     return-chan))
 
-#_(def Client
-    (let [{:keys [user password db endpoint]} (-> config/config :mysql :spec)]
-      (-> (mysql/mysql-client)
-          (mysql/with-credentials user password)
-          (mysql/with-database db)
-          (mysql/rich-client endpoint))))
-
 (defn query!
   [^Client rich-client
    sql-vec]
   (let [pret (a/promise-chan)]
     (-> (mysql/prepare rich-client (first sql-vec))
-        ;; (rest '(1 2 3 4))
         (mysql/select-stmt (rest sql-vec))
         (f/on-success
          [result]
