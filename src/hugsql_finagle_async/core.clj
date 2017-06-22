@@ -39,7 +39,6 @@
    sql-vec]
   (let [pret (a/promise-chan)]
     (-> (mysql/prepare rich-client (first sql-vec))
-        ;; (rest '(1 2 3 4))
         (mysql/select-stmt (rest sql-vec))
         (f/on-success
          [result]
