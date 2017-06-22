@@ -8,10 +8,13 @@ quick example:
 ```clojure
 ;; (:require [clojure.core.async :as async]  ; if in ns
 ;;           [finagle-clojure.mysql.client :as mysql]
-;;           [hugsql.core :as hugsql])
+;;           [hugsql.core :as hugsql]
+;;           [hugsql-finagle-async.core :refer hugsql-adapter-finagle-async])
+;; ;; or
 ;; (require '[clojure.core.async :as async])
 ;; (require '[finagle-clojure.mysql.client :as mysql])
 ;; (require '[hugsql.core :as hugsql])
+;; (require '[hugsql-finagle-async.core :refer hugsql-adapter-finagle-async])
 ;;
 (def mysql-config
   {:user     "root"
