@@ -7,7 +7,6 @@
   (:import (com.twitter.finagle.mysql Client))
   (:gen-class))
 
-(def ^:private ^:const params-regex #"(?<!\")\?(?!\")")
 
 (defn- get-one [result-chan]
   (let [return-chan (a/promise-chan)]
