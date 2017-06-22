@@ -1,4 +1,4 @@
-(defproject hugsql-finagle-async "0.1.0-SNAPSHOT"
+(defproject hugsql-finagle-async "0.1.0"
   :description "the asynchronous hugsql service"
   :url "http://cccc.im/"
   :license {:name "MIT License"
