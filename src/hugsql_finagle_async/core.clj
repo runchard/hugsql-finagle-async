@@ -17,7 +17,9 @@
                               (first res))]
                  (if (nil? return)
                    (a/close! return-chan)
-                   (a/put! return-chan return #(a/close! return-chan))))))
+                   (a/put! return-chan return
+                           (fn [_]
+                             (a/close! result-chan)))))))
     return-chan))
 
 (defn query!
@@ -31,7 +33,7 @@
          (a/put! pret result))
         (f/on-failure
          [e]
-         (a/close! pret)))
+         (a/put! pret e)))
     pret))
 
 (defn execute!
@@ -45,7 +47,7 @@
          (a/put! pret result))
         (f/on-failure
          [e]
-         (a/close! pret)))
+         (a/put! pret e)))
     pret))
 
 (deftype HugsqlAdapterFinagleAsync []
@@ -71,8 +73,8 @@
     result)
 
   (on-exception [this exception]
-    (let [c (a/chan)]
-      (a/put! c exception #(a/close! c))
+    (let [c (a/promise-chan)]
+      (a/put! c exception)
       c)))
 
 (defn hugsql-adapter-finagle-async []

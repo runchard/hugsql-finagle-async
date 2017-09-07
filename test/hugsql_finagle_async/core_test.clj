@@ -26,17 +26,19 @@
 (hugsql/set-adapter! (hugsql-adapter-finagle-async))
 
 
-
 (deftest integrate-test
   (testing "select character with no database"
-    (is (nil? (async/<!! (select-character-star Client {:id 1})))))
+    (is (instance? com.twitter.finagle.mysql.ServerError
+                   (async/<!! (select-character-star Client {:id 1})))))
 
   (testing "create character table"
     ;; TODO: manage it to a specific test and a fixture in this function
+    ;; FIXME: this is the incompatible part from jdbc.
     (is (= (async/<!! (create-characters-table Client)) []))
 
     ;; Create a existed table will return a nil.
-    (is (nil? (async/<!! (create-characters-table Client)))))
+    (is (instance? com.twitter.finagle.mysql.ServerError
+                   (async/<!! (create-characters-table Client)))))
 
   (testing "select character with no data"
     (is (nil? (async/<!! (select-character-star Client {:id 0})))))
@@ -54,11 +56,16 @@
                                                                           :table-name "characters"})))))))
 
   (testing "test the unique constaints by insert another weight 0 character"
-    (is (nil? (async/<!! (insert-character Client {:name "Richard" :weight 0})))))
+    (is (instance?
+         com.twitter.finagle.mysql.ServerError
+         (async/<!! (insert-character Client {:name "Richard" :weight 0})))))
 
   (testing "select character with not exist DB"
-    (is (nil? (async/<!! (select-character-by-weight Client {:weight 0
-                                                             :table-name "characters1"})))))
+    (is (instance? com.twitter.finagle.mysql.ServerError
+                   (async/<!! (select-character-by-weight
+                               Client
+                               {:weight 0
+                                :table-name "characters1"})))))
 
 
   (testing "raw return query with multiple recoreds returning"

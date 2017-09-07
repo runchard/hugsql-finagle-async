@@ -1,6 +1,11 @@
 --:name select-character-star :? :1
 SELECT * FROM characters WHERE id = :id;
 
+-- :name connection-check
+-- :command :execute
+-- :doc insert character
+SELECT 1;
+
 -- :name insert-character
 -- :command :execute
 -- :doc insert character
@@ -15,8 +20,9 @@ INSERT INTO `characters` (`name`, `weight`) VALUES(:name, :weight);
 CREATE TABLE characters (
   id         integer auto_increment PRIMARY KEY,
   name       varchar(40),
-  weight     integer UNIQUE KEY,
-  created_at timestamp not null default current_timestamp
+  weight     integer,
+  created_at timestamp not null default current_timestamp,
+  UNIQUE KEY uniq_weight (weight)
 );
 
 -- :name select-character-by-weight
